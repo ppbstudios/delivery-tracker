@@ -6,7 +6,7 @@ RUN npm install -g nodemon --unsafe
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
 
-COPY ./packages/apiserver/package.json ./
+COPY ./packages/apiserver ./
 RUN npm install
 
 EXPOSE 8082
