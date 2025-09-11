@@ -1,7 +1,7 @@
-FROM node:lts-alpine3.13
+FROM node:22-alpine
 
 RUN apk add --no-cache build-base python3
-RUN npm install -g nodemon --unsafe
+RUN npm install -g nodemon@3.0.2
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app

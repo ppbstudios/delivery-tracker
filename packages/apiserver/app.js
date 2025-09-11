@@ -5,7 +5,7 @@ const cors = require('cors');
 
 i18n.configure({
   locales: ['en', 'ja', 'ko'],
-  directory: __dirname + '/locales',
+  directory: path.join(__dirname, 'locales'),
 });
 
 function initApp(app) {
@@ -21,7 +21,10 @@ function initApp(app) {
     CARRIERS[name] = require(`./carriers/${name}`);
   });
 
-  const CARRIERS_INFOS = Object.keys(CARRIERS).map(id => ({ id, ...CARRIERS[id].info }));
+  const CARRIERS_INFOS = Object.keys(CARRIERS).map(id => ({
+    id,
+    ...CARRIERS[id].info,
+  }));
 
   app.get('/carriers', (req, res) => {
     res.json(CARRIERS_INFOS);
@@ -30,7 +33,7 @@ function initApp(app) {
   app.get('/carriers/:carrierId', (req, res) => {
     if (!(req.params.carrierId in CARRIERS)) {
       res.status(404).json({
-        message: res.__('not supported carrier'),
+        message: res._('not supported carrier'),
       });
       return;
     }
@@ -46,7 +49,7 @@ function initApp(app) {
 
     if (!(carrierId in CARRIERS)) {
       res.status(404).json({
-        message: res.__('not supported carrier'),
+        message: res._('not supported carrier'),
       });
       return;
     }
@@ -64,9 +67,7 @@ function initApp(app) {
       )
       .catch(err =>
         res.status(typeof err.code === 'number' ? err.code : 500).json({
-          message: err.message
-            ? err.message
-            : res.__('error message'),
+          message: err.message ? err.message : res._('error message'),
         })
       );
   });
