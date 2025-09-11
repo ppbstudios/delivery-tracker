@@ -6,13 +6,14 @@
   "bugs": {
     "url": "https://github.com/shlee322/delivery-tracker/issues"
   },
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "dev": "nodemon server.js",
-    "start": "node server.js",
+    "build": "tsc",
+    "dev": "ts-node server.ts",
+    "start": "npm run build && node dist/server.js",
     "test": "mocha",
-    "lint": "eslint carriers app.js server.js",
-    "lintfix": "eslint --fix carriers test app.js server.js"
+    "lint": "eslint carriers types app.ts server.ts --ext .js,.ts",
+    "lintfix": "eslint --fix carriers test types app.ts server.ts --ext .js,.ts"
   },
   "bin": {
     "delivery-tracker-apiserver": "./server.js"
@@ -36,8 +37,20 @@
     "tough-cookie": "^4.1.3"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2",
+    "@types/cheerio": "^0.22.35",
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/i18n": "^0.13.12",
+    "@types/iconv": "^3.0.4",
+    "@types/jsdom": "^21.1.7",
+    "@types/node": "^24.3.1",
+    "@typescript-eslint/eslint-plugin": "^8.43.0",
+    "@typescript-eslint/parser": "^8.43.0",
     "eslint": "^8.57.0",
-    "mocha": "^10.2.0"
+    "eslint-plugin-import": "^2.32.0",
+    "mocha": "^10.2.0",
+    "nodemon": "^3.0.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
