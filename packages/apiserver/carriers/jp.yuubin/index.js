@@ -1,7 +1,6 @@
 const axios = require('axios');
 const { JSDOM } = require('jsdom');
 
-
 const parseStatusId = s => {
   if (s.includes('Posting/Collection')) return 'at_pickup';
   if (s.includes('Final delivery')) return 'delivered';
@@ -25,28 +24,28 @@ function getTime(location, time) {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
 }
 
-
 function getTrack(trackId) {
   return new Promise((resolve, reject) => {
     axios
-      .get(
-        'http://tracking.post.japanpost.jp/service/singleSearch.do', {
-          params: {
-            'org.apache.struts.taglib.html.TOKEN': '',
-            searchKind: 5002,
-            locale: 'ja', // en, ja
-            SVID: '',
-            reqCodeNo1: trackId,
-          },
+      .get('http://tracking.post.japanpost.jp/service/singleSearch.do', {
+        params: {
+          'org.apache.struts.taglib.html.TOKEN': '',
+          searchKind: 5002,
+          locale: 'ja', // en, ja
+          SVID: '',
+          reqCodeNo1: trackId,
         },
-      )
+      })
       .then(res => {
         const dom = new JSDOM(res.data);
-        const progresses = dom.window.document.querySelector('table[summary="履歴情報"]')
+        const progresses = dom.window.document.querySelector(
+          'table[summary="履歴情報"]'
+        );
         if (!progresses) {
           return reject({
             code: 404,
-            message: dom.window.document.querySelectorAll('td ,txt_l')[1].textContent,
+            message:
+              dom.window.document.querySelectorAll('td ,txt_l')[1].textContent,
           });
         }
         return { progresses };
@@ -60,11 +59,15 @@ function getTrack(trackId) {
         const history = progresses.querySelectorAll('tr');
 
         for (let i = 2; i < history.length; i += 2) {
-          const [time, status, _, office, location] = history[i].querySelectorAll('td');
+          const [time, status, , office, location] =
+            history[i].querySelectorAll('td');
           shippingInformation.progresses.push({
             time: getTime(location.textContent, time.textContent),
-            location: { name: office.textContent, },
-            status: { id: parseStatusId(status.textContent), text: status.textContent },
+            location: { name: office.textContent },
+            status: {
+              id: parseStatusId(status.textContent),
+              text: status.textContent,
+            },
           });
         }
 

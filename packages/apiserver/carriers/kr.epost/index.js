@@ -34,7 +34,7 @@ function getTrack(trackId) {
         // const informationTable = document.querySelector('.table_col:nth-child(2)')
         // const progressTable = document.querySelector('.table_col:nth-child(1)')
 
-        const $informationTable = $("#print").find('table');
+        const $informationTable = $('#print').find('table');
         const $progressTable = $('#processTable');
 
         return { $, $informationTable, $progressTable };
@@ -61,10 +61,7 @@ function getTrack(trackId) {
           reject({
             code: 404,
             message: trimString(
-              $informationTable
-                .find('tr:nth-child(2)')
-                .eq(0)
-                .text()
+              $informationTable.find('tr:nth-child(2)').eq(0).text()
             ),
           });
         }
@@ -95,11 +92,7 @@ function getTrack(trackId) {
               .html()
               .replace(/\./g, '-')}T${td.eq(1).html()}:00+09:00`,
             location: {
-              name: td
-                .eq(2)
-                .find('a')
-                .eq(0)
-                .text(),
+              name: td.eq(2).find('a').eq(0).text(),
             },
             status: parseStatus(td.eq(3).text()),
             description: trimString(td.eq(3).text()),

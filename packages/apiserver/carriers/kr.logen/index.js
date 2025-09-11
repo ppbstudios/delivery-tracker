@@ -1,6 +1,6 @@
 // const { Iconv } = require('iconv');
 const axios = require('axios');
-const cheerio = require('cheerio')
+const cheerio = require('cheerio');
 
 // const iconv = new Iconv('EUC-KR', 'UTF-8//TRANSLIT//IGNORE');
 
@@ -17,11 +17,22 @@ function getTrack(trackId) {
   //   return s.replace(/([\n\t]{1,}|\s{2,})/g, ' ').trim();
   // };
   const tdToDescription = (td, $) => {
-    const headers = ['발송점', '도착점', '담당직원', '인수자', '영업소', '연락처'];
+    const headers = [
+      '발송점',
+      '도착점',
+      '담당직원',
+      '인수자',
+      '영업소',
+      '연락처',
+    ];
     return headers
       .map((header, i) => {
-        return $(td[i + 2]).text().trim() !== ''
-          ? `${header}: ${$(td[i + 2]).text().trim()}`
+        return $(td[i + 2])
+          .text()
+          .trim() !== ''
+          ? `${header}: ${$(td[i + 2])
+              .text()
+              .trim()}`
           : null;
       })
       .filter(obj => obj !== null)
@@ -30,14 +41,11 @@ function getTrack(trackId) {
 
   return new Promise((resolve, reject) => {
     axios
-      .get(
-        `https://www.ilogen.com/web/personal/trace/${encodeURI(trackId)}`,
-        {
-          responseType: 'arraybuffer',
-        }
-      )
+      .get(`https://www.ilogen.com/web/personal/trace/${encodeURI(trackId)}`, {
+        responseType: 'arraybuffer',
+      })
       .then(res => {
-        const $ = new cheerio.load(res.data.toString('utf-8'));
+        const $ = cheerio.load(res.data.toString('utf-8'));
 
         const tables = $('tbody');
         const informationTable = tables[0];
@@ -50,16 +58,32 @@ function getTrack(trackId) {
           });
         }
 
-        return { informationTable: $(informationTable), progressTable: $(progressTable), $ };
+        return {
+          informationTable: $(informationTable),
+          progressTable: $(progressTable),
+          $,
+        };
       })
       .then(({ informationTable, progressTable, $ }) => {
         const shippingInformation = {
           from: {
-            name: informationTable.children('tr').eq(3).children('td').eq(1).text().trim(),
+            name: informationTable
+              .children('tr')
+              .eq(3)
+              .children('td')
+              .eq(1)
+              .text()
+              .trim(),
             time: null,
           },
           to: {
-            name: informationTable.children('tr').eq(3).children('td').eq(3).text().trim(),
+            name: informationTable
+              .children('tr')
+              .eq(3)
+              .children('td')
+              .eq(3)
+              .text()
+              .trim(),
             time: null,
           },
           state: null,

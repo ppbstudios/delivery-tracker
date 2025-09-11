@@ -28,7 +28,6 @@ function getTime(time) {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
 }
 
-
 function getTrack(trackId) {
   return new Promise((resolve, reject) => {
     axios
@@ -63,11 +62,15 @@ function getTrack(trackId) {
         const history = progresses.querySelectorAll('tr');
 
         for (let i = 1; i < history.length; i += 1) {
-          const [_, status, date, time, office, __] = history[i].querySelectorAll('td');
+          const [, status, date, time, office] =
+            history[i].querySelectorAll('td');
           shippingInformation.progresses.push({
             time: getTime(`${date.textContent} ${time.textContent}`),
-            location: { name: office.textContent, },
-            status: { id: parseStatusId(status.textContent), text: status.textContent },
+            location: { name: office.textContent },
+            status: {
+              id: parseStatusId(status.textContent),
+              text: status.textContent,
+            },
           });
         }
 

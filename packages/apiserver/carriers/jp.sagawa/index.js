@@ -23,21 +23,20 @@ function getTime(time) {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}+09:00`;
 }
 
-
 function getTrack(trackId) {
   return new Promise((resolve, reject) => {
     axios
-      .get(
-        'http://k2k.sagawa-exp.co.jp/p/web/okurijosearch.do', {
-          params: {
-            okurijoNo: trackId,
-          },
+      .get('http://k2k.sagawa-exp.co.jp/p/web/okurijosearch.do', {
+        params: {
+          okurijoNo: trackId,
         },
-      )
+      })
       .then(res => {
         const dom = new JSDOM(res.data);
-        const [info, progresses] = dom.window.document.querySelectorAll('table.table_basic.table_okurijo_detail2');
-        if (info.querySelectorAll('tr').length != 5) {
+        const [info, progresses] = dom.window.document.querySelectorAll(
+          'table.table_basic.table_okurijo_detail2'
+        );
+        if (info.querySelectorAll('tr').length !== 5) {
           return reject({
             code: 404,
             message: info.querySelectorAll('tr')[5].textContent,
@@ -57,8 +56,11 @@ function getTrack(trackId) {
           const [status, time, office] = history[i].querySelectorAll('td');
           shippingInformation.progresses.push({
             time: getTime(time.textContent),
-            location: { name: office.textContent, },
-            status: { id: parseStatusId(status.textContent), text: status.textContent },
+            location: { name: office.textContent },
+            status: {
+              id: parseStatusId(status.textContent),
+              text: status.textContent,
+            },
           });
         }
 

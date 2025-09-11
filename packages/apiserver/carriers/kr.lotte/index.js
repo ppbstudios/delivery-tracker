@@ -31,9 +31,8 @@ function getTrack(trackId) {
         };
       })
       .then(({ informationTable, progressTable }) => {
-        const information = informationTable.querySelectorAll(
-          'tbody > tr > td'
-        );
+        const information =
+          informationTable.querySelectorAll('tbody > tr > td');
 
         if (information.length === 1) {
           reject({
@@ -71,27 +70,27 @@ function getTrack(trackId) {
           const errorTd = progressTable.querySelector('tbody > tr > td');
           reject({
             code: 404,
-            message: errorTd ? errorTd.textContent : "화물추적 내역이 없습니다.",
+            message: errorTd
+              ? errorTd.textContent
+              : '화물추적 내역이 없습니다.',
           });
           return;
-        } else {
-          shippingInformation.state =
-            shippingInformation.progresses[
-              shippingInformation.progresses.length - 1
-            ].status;
-          shippingInformation.from.time =
-            shippingInformation.progresses[0].time;
-
-          if (
-            shippingInformation.progresses[
-              shippingInformation.progresses.length - 1
-            ].status.id === 'delivered'
-          )
-            shippingInformation.to.time =
-              shippingInformation.progresses[
-                shippingInformation.progresses.length - 1
-              ].time;
         }
+        shippingInformation.state =
+          shippingInformation.progresses[
+            shippingInformation.progresses.length - 1
+          ].status;
+        shippingInformation.from.time = shippingInformation.progresses[0].time;
+
+        if (
+          shippingInformation.progresses[
+            shippingInformation.progresses.length - 1
+          ].status.id === 'delivered'
+        )
+          shippingInformation.to.time =
+            shippingInformation.progresses[
+              shippingInformation.progresses.length - 1
+            ].time;
 
         resolve(shippingInformation);
       })
