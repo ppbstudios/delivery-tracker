@@ -37,7 +37,7 @@ export interface ShippingAddress {
 export interface ShippingInformation {
   from?: ShippingAddress;
   to?: ShippingAddress;
-  state: ShippingStatus;
+  state?: ShippingStatus;
   progresses: TrackingProgress[];
   item?: string;
 }

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import * as cheerio from 'cheerio';
-import * as Entities from 'html-entities';
+import {decode} from 'html-entities';
 import * as qs from 'querystring';
 import {
   ShippingStatus,
@@ -24,10 +24,9 @@ function getTrack(trackId: string): Promise<ShippingInformation> {
 
   return new Promise<ShippingInformation>((resolve, reject) => {
     axios
-      .get('http://service.epost.go.kr/trace.RetrieveEmsRigiTraceList.com', {
+      .get('http://service.epost.go.kr/trace.RetrieveDomRigiTraceList.comm', {
         params: {
-          POST_CODE: trackId,
-          displayHeader: 'N',
+          sid1: trackId,
         },
       })
       .then(res => {
@@ -72,17 +71,15 @@ function getTrack(trackId: string): Promise<ShippingInformation> {
             name: to,
             time: undefined,
           },
-          state: { id: 'information_received', text: '방문예정' },
           progresses: [],
         };
 
-        const entities = new (Entities as any).XmlEntities();
 
         progressTable.find('tr:not(:first-child)').each((i, element) => {
           const $element = cheerio.load(element);
           const td = $element('td');
 
-          const timeText = entities.decode($element(td[0]).html() || '');
+          const timeText = decode($element(td[0]).html() || '');
           const time = `${timeText.replace(' ', 'T').replace(/\./g, '-')}+09:00`;
 
           const statusText = $element(td[1]).text().trim();
